@@ -1,0 +1,43 @@
+name: HTML Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Modify HTML
+      run: |
+        sed -i 's/Hello, World!/Hello, Universe!/' index.html
+        cat index.html
+
+    - name: Run tests
+      run: |
+        if grep -q "Hello, Universe!" index.html; then
+          echo "Test passed: 'Hello, Universe!' found in index.html";
+        else
+          echo "Test failed: 'Hello, Universe!' not found in index.html";
+          exit 1;
+        fi
+
+    - name: Deploy
+      run: echo "Deploying your website..."
+      # Add your deployment commands here
